@@ -36,63 +36,69 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
     };
 
     return (
-        <AuthLayout title="Reset password" description="Please enter your new password below">
-            <Head title="Reset password" />
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-lime-100 via-green-100 to-emerald-100">
+            <AuthLayout title="Restablecer contraseña" description="Introduce tu nueva contraseña para continuar">
+                <Head title="Restablecer contraseña" />
 
-            <form onSubmit={submit}>
-                <div className="grid gap-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            name="email"
-                            autoComplete="email"
-                            value={data.email}
-                            className="mt-1 block w-full"
-                            readOnly
-                            onChange={(e) => setData('email', e.target.value)}
-                        />
-                        <InputError message={errors.email} className="mt-2" />
-                    </div>
+                <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+                    <form onSubmit={submit} className="space-y-6">
+                        <div className="grid gap-2">
+                            <Label htmlFor="email">Correo electrónico</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                name="email"
+                                autoComplete="email"
+                                value={data.email}
+                                readOnly
+                                className="mt-1 block w-full cursor-not-allowed bg-gray-100"
+                                onChange={(e) => setData('email', e.target.value)}
+                            />
+                            <InputError message={errors.email} className="mt-2" />
+                        </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            name="password"
-                            autoComplete="new-password"
-                            value={data.password}
-                            className="mt-1 block w-full"
-                            autoFocus
-                            onChange={(e) => setData('password', e.target.value)}
-                            placeholder="Password"
-                        />
-                        <InputError message={errors.password} />
-                    </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="password">Nueva contraseña</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                name="password"
+                                autoComplete="new-password"
+                                value={data.password}
+                                autoFocus
+                                className="mt-1 block w-full"
+                                onChange={(e) => setData('password', e.target.value)}
+                                placeholder="********"
+                            />
+                            <InputError message={errors.password} />
+                        </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="password_confirmation">Confirm password</Label>
-                        <Input
-                            id="password_confirmation"
-                            type="password"
-                            name="password_confirmation"
-                            autoComplete="new-password"
-                            value={data.password_confirmation}
-                            className="mt-1 block w-full"
-                            onChange={(e) => setData('password_confirmation', e.target.value)}
-                            placeholder="Confirm password"
-                        />
-                        <InputError message={errors.password_confirmation} className="mt-2" />
-                    </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="password_confirmation">Confirmar contraseña</Label>
+                            <Input
+                                id="password_confirmation"
+                                type="password"
+                                name="password_confirmation"
+                                autoComplete="new-password"
+                                value={data.password_confirmation}
+                                className="mt-1 block w-full"
+                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                                placeholder="********"
+                            />
+                            <InputError message={errors.password_confirmation} className="mt-2" />
+                        </div>
 
-                    <Button type="submit" className="mt-4 w-full" disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Reset password
-                    </Button>
+                        <Button
+                            type="submit"
+                            className="mt-4 w-full rounded-lg bg-green-700 font-semibold text-white transition-all hover:bg-green-800"
+                            disabled={processing}
+                        >
+                            {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                            Restablecer contraseña
+                        </Button>
+                    </form>
                 </div>
-            </form>
-        </AuthLayout>
+            </AuthLayout>
+        </div>
     );
 }

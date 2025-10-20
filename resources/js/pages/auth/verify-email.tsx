@@ -12,30 +12,43 @@ export default function VerifyEmail({ status }: { status?: string }) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
         post(route('verification.send'));
     };
 
     return (
-        <AuthLayout title="Verify email" description="Please verify your email address by clicking on the link we just emailed to you.">
-            <Head title="Email verification" />
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-lime-100 via-green-100 to-emerald-100">
+            <AuthLayout
+                title="Verifica tu correo electrónico"
+                description="Revisa tu bandeja de entrada y haz clic en el enlace que te enviamos para completar la verificación."
+            >
+                <Head title="Verificación de correo electrónico" />
 
-            {status === 'verification-link-sent' && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    A new verification link has been sent to the email address you provided during registration.
+                <div className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-lg">
+                    {status === 'verification-link-sent' && (
+                        <div className="mb-4 text-sm font-medium text-green-700">
+                            ¡Se ha enviado un nuevo enlace de verificación al correo electrónico que proporcionaste durante el registro!
+                        </div>
+                    )}
+
+                    <form onSubmit={submit} className="space-y-6">
+                        <Button
+                            disabled={processing}
+                            className="w-full rounded-lg bg-green-700 font-semibold text-white transition-all hover:bg-green-800"
+                        >
+                            {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                            Reenviar enlace de verificación
+                        </Button>
+
+                        <TextLink
+                            href={route('logout')}
+                            method="post"
+                            className="mx-auto block text-sm font-medium text-green-700 hover:text-green-800"
+                        >
+                            Cerrar sesión
+                        </TextLink>
+                    </form>
                 </div>
-            )}
-
-            <form onSubmit={submit} className="space-y-6 text-center">
-                <Button disabled={processing} variant="secondary">
-                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                    Resend verification email
-                </Button>
-
-                <TextLink href={route('logout')} method="post" className="mx-auto block text-sm">
-                    Log out
-                </TextLink>
-            </form>
-        </AuthLayout>
+            </AuthLayout>
+        </div>
     );
 }

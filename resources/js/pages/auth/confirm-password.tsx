@@ -23,38 +23,40 @@ export default function ConfirmPassword() {
     };
 
     return (
-        <AuthLayout
-            title="Confirm your password"
-            description="This is a secure area of the application. Please confirm your password before continuing."
-        >
-            <Head title="Confirm password" />
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-lime-100 via-green-100 to-emerald-100">
+            <AuthLayout title="Confirma tu contraseña" description="Por seguridad, confirma tu contraseña antes de continuar.">
+                <Head title="Confirmar contraseña" />
 
-            <form onSubmit={submit}>
-                <div className="space-y-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            autoComplete="current-password"
-                            value={data.password}
-                            autoFocus
-                            onChange={(e) => setData('password', e.target.value)}
-                        />
+                <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+                    <form onSubmit={submit} className="space-y-6">
+                        <div className="grid gap-2">
+                            <Label htmlFor="password">Contraseña</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                name="password"
+                                placeholder="Ingresa tu contraseña"
+                                autoComplete="current-password"
+                                value={data.password}
+                                autoFocus
+                                onChange={(e) => setData('password', e.target.value)}
+                            />
 
-                        <InputError message={errors.password} />
-                    </div>
+                            <InputError message={errors.password} />
+                        </div>
 
-                    <div className="flex items-center">
-                        <Button className="w-full" disabled={processing}>
-                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Confirm password
-                        </Button>
-                    </div>
+                        <div className="flex items-center justify-center">
+                            <Button
+                                className="w-full rounded-lg bg-green-700 font-semibold text-white transition-all hover:bg-green-800"
+                                disabled={processing}
+                            >
+                                {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                                Confirmar contraseña
+                            </Button>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </AuthLayout>
+            </AuthLayout>
+        </div>
     );
 }
