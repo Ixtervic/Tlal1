@@ -10,33 +10,38 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 
-class Enrollment extends Model
-{
-    /** @use HasFactory<\Database\Factories\EnrollmentFactory> */
-    use HasFactory;
 
+class Lesson extends Model
+{
+    use HasFactory;
     protected $fillable = [
-        'user_id',
-        'course_id',
-        'enrolled_at',
-        'progress_percent',
-        'state',
-        'completed_at',
+        'module_id',
+        'title',
+        'slug',
+        'content_text',
+        'duration_seconds',
+        'position',
+        'is_required',
     ];
 
-    public function user(): BelongsTo
+    public function module(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Module::class);
     }
 
-    public function course(): BelongsTo
+    public function quizze(): HasOne
     {
-        return $this->belongsTo(Course::class);
+        return $this->hasOne(Quizze::class);
     }
 
     public function progressItems(): HasMany
     {
         return $this->hasMany(ProgressItem::class);
+    }
+
+    public function medium(): MorphMany
+    {
+        return $this->morphMany(Medium::class, 'mediaable');
     }
 
 }

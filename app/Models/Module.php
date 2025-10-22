@@ -7,24 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 
-class Quizze extends Model
+class Module extends Model
 {
-    /** @use HasFactory<\Database\Factories\QuizzeFactory> */
     use HasFactory;
 
-
     protected $fillable = [
-        'lesson_id',
+        'course_id',
         'title',
-        'settings',
+        'description',
+        'position',
     ];
 
-    public function lesson(): BelongsTo
+    public function course(): BelongsTo
     {
-        return $this->belongsTo(Lesson::class);
+        return $this->belongsTo(Course::class);
+    }
+
+    public function lessons(): HasMany
+    {
+        return $this->hasMany(Lesson::class);
     }
 
 }

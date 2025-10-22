@@ -7,20 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 
-class Quizze extends Model
+
+class ProgressItem extends Model
 {
-    /** @use HasFactory<\Database\Factories\QuizzeFactory> */
     use HasFactory;
-
-
     protected $fillable = [
+        'enrollment_id',
         'lesson_id',
-        'title',
-        'settings',
+        'is_completed',
+        'completed_at',
+        'attempts',
+        'last_viewed_at',
     ];
+
+    public function enrollment(): BelongsTo
+    {
+        return $this->belongsTo(Enrollment::class);
+    }
 
     public function lesson(): BelongsTo
     {
