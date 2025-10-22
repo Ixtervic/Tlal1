@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('quizzes', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('lesson_id');
+            $table->id();
+            //$table->uuid('lesson_id');
+            $table->foreignId('lesson_id')->nullable()->constrained('lessons')->onDelete('cascade');
             $table->string('title')->nullable();
             $table->json('settings')->nullable();
             $table->timestamps();
 
-            $table->foreign('lesson_id')->references('id')->on('lessons');
+            //$table->foreign('lesson_id')->references('id')->on('lessons');
         });
     }
 

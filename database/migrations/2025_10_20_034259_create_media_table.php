@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('media', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('provider_storage_path');
             $table->string('url');
             $table->enum('kind', ['image', 'video', 'pdf', 'audio', 'other']);

@@ -8,9 +8,11 @@ return new class extends Migration {
     public function up(): void {
         // Tabla de inscripciones de usuarios a cursos
         Schema::create('enrollments', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->uuid('course_id');
+            $table->id();
+            //$table->uuid('user_id');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            //$table->uuid('course_id');
+            $table->foreignId('course_id')->nullable()->constrained('courses')->onDelete('cascade');
             $table->timestamp('enrolled_at')->useCurrent();
             $table->decimal('progress_percent', 5, 2)->default(0);
             $table->enum('state', ['in_progress', 'completed', 'cancelled'])->default('in_progress');
@@ -19,15 +21,17 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->unique(['user_id', 'course_id']);
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('course_id')->references('id')->on('courses');
+            //$table->foreign('user_id')->references('id')->on('users');
+            //$table->foreign('course_id')->references('id')->on('courses');
         });
 
         // Tabla de progreso por lección
         Schema::create('progress_items', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('enrollment_id');
-            $table->uuid('lesson_id');
+            $table->id();
+            //$table->uuid('enrollment_id');
+            $table->foreignId('enrollment_id')->nullable()->constrained('enrollments')->onDelete('cascade');
+            //$table->uuid('lesson_id');
+            $table->foreignId('lesson_id')->nullable()->constrained('lessons')->onDelete('cascade');
             $table->boolean('is_completed')->default(false);
             $table->timestamp('completed_at')->nullable();
             $table->integer('attempts')->default(0);
@@ -36,8 +40,8 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->unique(['enrollment_id', 'lesson_id']);
-            $table->foreign('enrollment_id')->references('id')->on('enrollments')->onDelete('cascade');
-            $table->foreign('lesson_id')->references('id')->on('lessons');
+            //$table->foreign('enrollment_id')->references('id')->on('enrollments')->onDelete('cascade');
+            //$table->foreign('lesson_id')->references('id')->on('lessons');
         });
     }
 
