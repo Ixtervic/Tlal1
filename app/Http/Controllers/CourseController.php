@@ -12,12 +12,18 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index():Response
+    public function index()
     {
-        return Inertia::render('Products/index', [
-            'products' => Course::latest()->get(),
+        $courses = Course::with(['user', 'category'])
+            ->where('is_published', true)
+            ->latest()
+            ->get();
+
+        return inertia('Student/Courses/Index', [
+            'courses' => $courses,
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

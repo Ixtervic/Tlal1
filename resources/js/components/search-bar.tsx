@@ -23,7 +23,7 @@ const SearchBar: React.FC = () => {
             <form onSubmit={handleSubmit} className="flex items-center">
                 <input
                     type="text"
-                    placeholder="Buscar productos..."
+                    placeholder="Buscar cursos..."
                     value={searchTerm}
                     onChange={handleSearch}
                     className="w-full rounded-lg border px-4 py-2"
