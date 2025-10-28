@@ -5,12 +5,25 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserController;
 use Inertia\Inertia;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\InstructorCourseController;
+
 
 // 🔓 Público: cualquiera puede ver los cursos y buscar
 Route::get('/', [CourseController::class, 'index'])->name('home');
 Route::get('/cursos', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/buscar/{searched?}', [SearchController::class, 'search'])->name('search.results');
 
+
+// 🔒 Protegidas (para instructores)
+Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->group(function () {
+    Route::get('/courses', [InstructorCourseController::class, 'index'])->name('instructor.courses.index');
+    Route::get('/courses/create', [InstructorCourseController::class, 'create'])->name('instructor.courses.create');
+    Route::post('/courses', [InstructorCourseController::class, 'store'])->name('instructor.courses.store');
+    Route::delete('/courses/{course}', [InstructorCourseController::class, 'destroy'])->name('instructor.courses.destroy');
+});
+
+
+/*
 // 🔒 Protegidas (para instructores y admins)
 Route::middleware(['auth'])->group(function () {
     Route::get('/cursos/crear', [CourseController::class, 'create'])
@@ -29,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('courses.destroy')
         ->middleware('permission:courses.destroy');
 });
+*/
 
 Route::get('dashboard', function () {
         return Inertia::render('dashboard');

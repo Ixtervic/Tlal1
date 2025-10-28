@@ -28,11 +28,13 @@ class UserController extends Controller
      */
     public function index()
     {
+        /*
         $users = User::with('roles', 'permissions')->paginate(10);
         return response()->json([
             'success' => true,
             'data' => $users,
         ]);
+        */
     }
 
     /**

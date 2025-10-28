@@ -41,16 +41,39 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // Buscar el usuario por email
+        $user = \App\Models\User::where('email', $this->email)->first();
+
+        // Si no existe, lanzar error específico
+        if (! $user) {
             RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => __('Este correo no existe en nuestros registros.'),
+            ]);
+        }
+
+        // Si existe pero la contraseña no coincide
+        if (! \Illuminate\Support\Facades\Hash::check($this->password, $user->password)) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'password' => __('Contraseña incorrecta.'),
+            ]);
+        }
+
+        // Si todo está bien, intentamos autenticar
+        if (! \Illuminate\Support\Facades\Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => __('Estas credenciales no coinciden con nuestros registros.'),
             ]);
         }
 
         RateLimiter::clear($this->throttleKey());
     }
+
 
     /**
      * Ensure the login request is not rate limited.

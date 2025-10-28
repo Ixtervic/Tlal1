@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Permission\Traits\HasRoles;
 
 
 class Quizze extends Model
 {
     /** @use HasFactory<\Database\Factories\QuizzeFactory> */
-    use HasFactory;
+    use HasFactory, HasRoles;
 
 
     protected $fillable = [

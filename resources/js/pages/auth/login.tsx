@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { Eye, EyeClosed, LoaderCircle } from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -34,6 +34,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         });
     };
 
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev);
+    };
+
     return (
         <>
             <Head title="Iniciar sesión" />
@@ -63,41 +69,59 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </div>
 
                     <div className="mb-4">
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="password" className="text-gray-600">
-                                Contraseña
-                            </Label>
-                            {canResetPassword && (
-                                <TextLink href={route('password.request')} className="text-sm text-green-700 hover:underline" tabIndex={5}>
-                                    ¿Olvidaste tu contraseña?
-                                </TextLink>
-                            )}
+                        <Label htmlFor="password" className="text-gray-600">
+                            Contraseña
+                        </Label>
+
+                        {/* Contenedor relativo para el campo y el botón */}
+                        <div className="relative">
+                            <Input
+                                id="password"
+                                // TIPO: Alterna entre 'password' (oculto) y 'text' (visible)
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="********"
+                                required
+                                tabIndex={2}
+                                autoComplete="current-password"
+                                // COLOR DE TEXTO: Aplicamos el gris 500
+                                className="text-gray-500"
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                            />
+
+                            {/* Botón para Mostrar/Ocultar Contraseña */}
+                            <button
+                                type="button"
+                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5 text-gray-400 hover:text-gray-600 focus:outline-none"
+                                onClick={togglePasswordVisibility}
+                                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                            >
+                                {/* Puedes usar un ícono de ojo si tienes alguno */}
+                                {showPassword ? <EyeClosed /> : <Eye />}
+                            </button>
                         </div>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="********"
-                            required
-                            tabIndex={2}
-                            autoComplete="current-password"
-                            className="text-gray-500"
-                            value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
-                        />
+
                         <InputError message={errors.password} />
                     </div>
 
-                    <div className="mb-4 flex items-center space-x-3">
-                        <Checkbox
-                            id="remember"
-                            name="remember"
-                            checked={data.remember}
-                            onClick={() => setData('remember', !data.remember)}
-                            tabIndex={3}
-                        />
-                        <Label htmlFor="remember" className="text-gray-600">
-                            Recuérdame
-                        </Label>
+                    <div className="mb-4 flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <Checkbox
+                                id="remember"
+                                name="remember"
+                                checked={data.remember}
+                                onClick={() => setData('remember', !data.remember)}
+                                tabIndex={3}
+                            />
+                            <Label htmlFor="remember" className="text-gray-600">
+                                Recuérdame
+                            </Label>
+                        </div>
+                        {canResetPassword && (
+                            <TextLink href={route('password.request')} className="text-sm text-green-700 hover:underline" tabIndex={5}>
+                                ¿Olvidaste tu contraseña?
+                            </TextLink>
+                        )}
                     </div>
 
                     <Button

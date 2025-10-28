@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Permission\Traits\HasRoles;
 
 
 
 class ProgressItem extends Model
 {
-    use HasFactory;
+    use HasFactory, HasRoles;
+
     protected $fillable = [
         'enrollment_id',
         'lesson_id',
