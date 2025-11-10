@@ -6,6 +6,9 @@ use App\Http\Controllers\UserController;
 use Inertia\Inertia;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\InstructorCourseController;
+use App\Http\Controllers\Auth\GoogleAuthController;
+
+Route::post('/auth/google', [GoogleAuthController::class, 'store'])->name('auth.google');
 
 
 // 🔓 Público: cualquiera puede ver los cursos y buscar
@@ -20,6 +23,10 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->group(func
     Route::get('/courses/create', [InstructorCourseController::class, 'create'])->name('instructor.courses.create');
     Route::post('/courses', [InstructorCourseController::class, 'store'])->name('instructor.courses.store');
     Route::delete('/courses/{course}', [InstructorCourseController::class, 'destroy'])->name('instructor.courses.destroy');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', fn () => Inertia::render('Admin/Dashboard'))->name('admin.dashboard');
 });
 
 

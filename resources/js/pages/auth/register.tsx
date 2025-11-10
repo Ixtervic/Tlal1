@@ -1,3 +1,4 @@
+import GoogleLogin from '@/components/GoogleLogin';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -53,6 +54,7 @@ export default function Register() {
                             required
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
+                            className="text-gray-500"
                         />
                         <InputError message={errors.name} />
                     </div>
@@ -67,6 +69,7 @@ export default function Register() {
                             required
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
+                            className="text-gray-500"
                         />
                         <InputError message={errors.email} />
                     </div>
@@ -124,6 +127,17 @@ export default function Register() {
                         {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                         Crear cuenta
                     </Button>
+
+                    {/* Separador visual */}
+                    <div className="my-6 flex items-center">
+                        <div className="h-px flex-1 bg-gray-300" />
+                        <span className="mx-3 text-sm text-gray-500">o</span>
+                        <div className="h-px flex-1 bg-gray-300" />
+                    </div>
+
+                    {/* Botón de Google */}
+                    <GoogleLogin label="Registrarse con Google" />
+
                     <div className="mt-6 text-center text-sm text-gray-600">
                         ¿Ya tienes una cuenta?{' '}
                         <TextLink href={route('login')} className="text-green-700 underline">

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,10 +31,33 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+
+        // 👇 Aseguramos que sea una instancia válida del modelo User
+        if (!$user instanceof User) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors([
+                'email' => 'Ocurrió un problema al iniciar sesión. Intenta nuevamente.',
+            ]);
+        }
+
+        // 👇 Aquí forzamos recarga del usuario para que tenga todos los traits
+        $user = User::find($user->id);
+
+        if ($user->hasRole('admin')) {
+            return redirect()->intended(route('admin.dashboard', absolute: false));
+        }
+
+        if ($user->hasRole('instructor')) {
+            return redirect()->intended(route('instructor.courses.index', absolute: false));
+        }
+
+        // Por defecto
+        return redirect()->intended(route('courses.index', absolute: false));
     }
 
     /**

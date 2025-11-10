@@ -34,5 +34,8 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'firebase' => [
+        'api_key' => env('FIREBASE_API_KEY'),
+    ],
 
 ];

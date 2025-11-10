@@ -2,6 +2,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { Eye, EyeClosed, LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+import GoogleLogin from '@/components/GoogleLogin';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -77,13 +78,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <div className="relative">
                             <Input
                                 id="password"
-                                // TIPO: Alterna entre 'password' (oculto) y 'text' (visible)
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder="********"
                                 required
                                 tabIndex={2}
                                 autoComplete="current-password"
-                                // COLOR DE TEXTO: Aplicamos el gris 500
                                 className="text-gray-500"
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
@@ -133,6 +132,16 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                         Acceder
                     </Button>
+
+                    {/* Separador visual */}
+                    <div className="my-6 flex items-center">
+                        <div className="h-px flex-1 bg-gray-300" />
+                        <span className="mx-3 text-sm text-gray-500">o</span>
+                        <div className="h-px flex-1 bg-gray-300" />
+                    </div>
+
+                    {/* Botón de Google */}
+                    <GoogleLogin />
 
                     <div className="mt-6 text-center text-sm text-gray-600">
                         ¿No tienes una cuenta?{' '}
