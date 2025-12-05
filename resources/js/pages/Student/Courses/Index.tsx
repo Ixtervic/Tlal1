@@ -19,7 +19,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Index({ courses }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="min-h-screen bg-gray-50 px-6 py-10 dark:bg-gray-900">
+            <div className="min-h-screen bg-green-50 px-6 py-10 dark:bg-gray-900">
                 <Head title="Cursos disponibles" />
 
                 <div className="mx-auto max-w-7xl">
