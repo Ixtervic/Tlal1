@@ -28,20 +28,22 @@ export default function Index({ courses }: Props) {
 
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Mis Cursos</h1>
+                        <h1 className="text-3xl font-extrabold text-gray-800 dark:text-white">Mis Cursos</h1>
 
                         <Link
                             href={route('instructor.courses.create')}
-                            className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-white transition hover:bg-green-700"
+                            className="inline-flex transform items-center gap-2 rounded-lg bg-green-600 px-6 py-3 font-semibold text-white transition hover:scale-105 hover:bg-green-700"
                         >
                             <Plus size={18} /> Nuevo Curso
                         </Link>
                     </div>
 
                     {courses.length === 0 ? (
-                        <p className="text-center text-gray-500">Aún no tienes cursos creados. Crea uno nuevo para empezar.</p>
+                        <p className="text-center text-lg text-gray-500 dark:text-gray-400">
+                            Aún no tienes cursos creados. Crea uno nuevo para empezar.
+                        </p>
                     ) : (
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {courses.map((course) => (
                                 <CourseCard key={course.id} course={course} />
                             ))}
