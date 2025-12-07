@@ -9,8 +9,19 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, LoaderCircle } from 'lucide-react';
 
-export default function Create({ ...props }, Course = {}) {
-    const { course, isView, isEdit } = props;
+interface Category {
+    id: number;
+    name: string;
+}
+
+interface CreateProps {
+    categories: Category[];
+    course?: any;
+    isView?: boolean;
+    isEdit?: boolean;
+}
+
+export default function Create({ categories, course, isView, isEdit }: CreateProps) {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -20,39 +31,29 @@ export default function Create({ ...props }, Course = {}) {
     ];
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
-        title: course?.title || '',
-        description: course?.description || '',
-        price: course?.price || '',
-        category_id: course?.category_id || '',
-        image: null as File | null,
+        title: course?.title || "",
+        short_description: course?.short_description || "",
+        description: course?.description || "",
+        category_id: course?.category_id || "",
+        level: course?.level || "beginner",
+        price: course?.price || 0,
+        duration_minutes: course?.duration_minutes || "",
+        is_published: course?.is_published ?? true,
+        published_at: course?.published_at || "",
     });
+
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        Object.entries(data).forEach(([key, value]) => {
-            if (value !== null) {
-                formData.append(key, value as any);
-            }
-        });
-
         if (isEdit) {
             put(route('instructor.courses.update', course.id), {
-                forceFormData: true,
                 onSuccess: () => reset(),
             });
         } else {
             post(route('instructor.courses.store'), {
-                forceFormData: true,
                 onSuccess: () => reset(),
             });
-        }
-    };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            setData('image', e.target.files[0]);
         }
     };
 
@@ -78,6 +79,7 @@ export default function Create({ ...props }, Course = {}) {
                 <CardContent>
                     <form className="flex flex-col gap-6" onSubmit={submit} autoComplete="off">
                         <div className="grid gap-6">
+
                             {/* Título */}
                             <div className="grid gap-2">
                                 <Label htmlFor="title">Título del curso</Label>
@@ -93,16 +95,30 @@ export default function Create({ ...props }, Course = {}) {
                                 <InputError message={errors.title} />
                             </div>
 
-                            {/* Descripción */}
+                            {/* Short Description */}
                             <div className="grid gap-2">
-                                <Label htmlFor="description">Descripción</Label>
+                                <Label htmlFor="short_description">Descripción corta</Label>
+                                <CustomTextArea
+                                    id="short_description"
+                                    rows={3}
+                                    value={data.short_description}
+                                    onChange={(e) => setData('short_description', e.target.value)}
+                                    disabled={processing || isView}
+                                    placeholder="Resumen breve del curso..."
+                                />
+                                <InputError message={errors.short_description} />
+                            </div>
+
+                            {/* Descripción completa */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="description">Descripción completa</Label>
                                 <CustomTextArea
                                     id="description"
-                                    rows={4}
+                                    rows={6}
                                     value={data.description}
                                     onChange={(e) => setData('description', e.target.value)}
                                     disabled={processing || isView}
-                                    placeholder="Describe brevemente el contenido del curso..."
+                                    placeholder="Describe detalladamente el curso..."
                                 />
                                 <InputError message={errors.description} />
                             </div>
@@ -110,15 +126,38 @@ export default function Create({ ...props }, Course = {}) {
                             {/* Categoría */}
                             <div className="grid gap-2">
                                 <Label htmlFor="category_id">Categoría</Label>
-                                <Input
+                                <select
                                     id="category_id"
-                                    type="text"
                                     value={data.category_id}
                                     onChange={(e) => setData('category_id', e.target.value)}
                                     disabled={processing || isView}
-                                    placeholder="ID o nombre de categoría"
-                                />
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                                >
+                                    <option value="">Selecciona una categoría</option>
+                                    {categories.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
                                 <InputError message={errors.category_id} />
+                            </div>
+
+                            {/* Nivel */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="level">Nivel</Label>
+                                <select
+                                    id="level"
+                                    value={data.level}
+                                    onChange={(e) => setData('level', e.target.value)}
+                                    disabled={processing || isView}
+                                    className="flex h-10 w-full rounded-md border px-3 py-2"
+                                >
+                                    <option value="beginner">Principiante</option>
+                                    <option value="intermediate">Intermedio</option>
+                                    <option value="advanced">Avanzado</option>
+                                </select>
+                                <InputError message={errors.level} />
                             </div>
 
                             {/* Precio */}
@@ -136,36 +175,47 @@ export default function Create({ ...props }, Course = {}) {
                                 <InputError message={errors.price} />
                             </div>
 
-                            {/* Imagen */}
-                            {!isView && (
-                                <div className="grid gap-2">
-                                    <Label htmlFor="image">Imagen del curso (opcional)</Label>
-                                    <Input id="image" type="file" accept="image/*" onChange={handleFileChange} disabled={processing} />
-                                    <InputError message={errors.image} />
-                                </div>
-                            )}
+                            {/* Duración en minutos */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="duration_minutes">Duración (minutos)</Label>
+                                <Input
+                                    id="duration_minutes"
+                                    type="number"
+                                    value={data.duration_minutes}
+                                    onChange={(e) => setData('duration_minutes', e.target.value)}
+                                    disabled={processing || isView}
+                                    placeholder="Ej: 120"
+                                />
+                                <InputError message={errors.duration_minutes} />
+                            </div>
 
-                            {/* Vista previa de imagen */}
-                            {(isEdit || isView) && course?.image && (
-                                <div className="grid gap-2">
-                                    <Label>Imagen actual</Label>
-                                    <img
-                                        src={`/${course.image}`}
-                                        alt="Imagen del curso"
-                                        className="h-40 w-60 rounded-lg border border-gray-300 object-cover"
-                                    />
-                                </div>
-                            )}
+                            {/* Fecha de publicación */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="published_at">Fecha de publicación</Label>
+                                <Input
+                                    id="published_at"
+                                    type="datetime-local"
+                                    value={data.published_at}
+                                    onChange={(e) => setData('published_at', e.target.value)}
+                                    disabled={processing || isView}
+                                />
+                                <InputError message={errors.published_at} />
+                            </div>
 
                             {/* Botón Guardar */}
                             {!isView && (
-                                <Button type="submit" disabled={processing} className="mt-2 w-fit bg-green-700 text-white hover:bg-green-800">
+                                <Button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="mt-2 w-fit bg-green-700 text-white hover:bg-green-800"
+                                >
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                     {processing ? (isEdit ? 'Actualizando...' : 'Guardando...') : isEdit ? 'Actualizar' : 'Guardar'}
                                 </Button>
                             )}
                         </div>
                     </form>
+
                 </CardContent>
             </Card>
         </AppLayout>

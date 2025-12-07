@@ -9,7 +9,7 @@ interface Props {
 
 export default function CourseCard({ course, canEdit, canDelete }: Props) {
     return (
-        <div className="overflow-hidden rounded-2xl bg-white shadow-md transition hover:shadow-lg dark:bg-gray-800">
+        <div className="overflow-hidden rounded-2xl bg-white shadow-md transition hover:shadow-lg dark:bg-green-100">
             <img src={course.thumbnail_url || '/images/default-course.jpg'} alt={course.title} className="h-48 w-full object-cover" />
             <div className="space-y-2 p-4">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{course.title}</h3>

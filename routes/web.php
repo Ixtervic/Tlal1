@@ -22,11 +22,12 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->group(func
     Route::get('/courses', [InstructorCourseController::class, 'index'])->name('instructor.courses.index');
     Route::get('/courses/create', [InstructorCourseController::class, 'create'])->name('instructor.courses.create');
     Route::post('/courses', [InstructorCourseController::class, 'store'])->name('instructor.courses.store');
+    Route::delete('/courses/{course}', [InstructorCourseController::class, 'edit'])->name('instructor.courses.edit');
     Route::delete('/courses/{course}', [InstructorCourseController::class, 'destroy'])->name('instructor.courses.destroy');
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Admin/Dashboard'))->name('admin.dashboard');
+    Route::get('/dashboard', fn() => Inertia::render('Admin/Dashboard'))->name('admin.dashboard');
 });
 
 
@@ -52,10 +53,10 @@ Route::middleware(['auth'])->group(function () {
 */
 
 Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    return Inertia::render('dashboard');
+})->name('dashboard');
 Route::middleware(['auth', 'verified'])->group(function () {
-    
+
 });
 
 /* Usuarios */
@@ -105,5 +106,5 @@ Route::delete('cursos/{id}', [CourseController::class, 'destroy'])
     ->middleware('permission:courses.destroy');
 */
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
