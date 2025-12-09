@@ -37,19 +37,35 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // Crear usuario
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        // Rol por defecto
-        $user->assignRole('instructor');
+        // Obtener dominio del correo
+        $email = $user->email;
+        $domain = substr(strrchr($email, '@'), 1); // obtiene lo que va después de '@'
 
+        // Asignar el rol según el dominio
+        $roleName = match ($domain) {
+            'gmail.com'            => 'student',
+            'mycorreo.upp.edu.mx'  => 'instructor',
+            'admin.com'            => 'admin',
+            default                => 'student', // Rol por defecto
+        };
+
+        // Asignar rol usando Spatie
+        $user->assignRole($roleName);
+
+        // Evento de usuario registrado
         event(new Registered($user));
 
+        // Autologin
         Auth::login($user);
 
+        // Redirigir a la página principal de cursos
         return redirect()->intended(route('courses.index', absolute: false));
     }
 }
