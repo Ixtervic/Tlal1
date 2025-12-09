@@ -11,9 +11,13 @@ use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\EnrollmentController;
 
+use App\Http\Controllers\ChatbotController;
 
 Route::post('/auth/google', [GoogleAuthController::class, 'store'])->name('auth.google');
 
+//Chatbot route
+Route::post('/chatbot/message', [ChatbotController::class, 'send'])
+    ->name('chatbot.message');
 
 // 🔓 Público: cualquiera puede ver los cursos y buscar
 Route::get('/', [CourseController::class, 'index'])->name('home');
