@@ -41,6 +41,7 @@ class InstructorCourseController extends Controller
             'duration_minutes' => 'nullable|integer|min:1',
             'is_published' => 'nullable|boolean',
             'published_at' => 'nullable|date',
+
         ]);
 
         // Generate unique slug from title
@@ -67,15 +68,72 @@ class InstructorCourseController extends Controller
      */
     public function edit(Course $course)
     {
-        //
+        $isEdit = true;
+        $course = Course::findOrFail($course->id);
+        $categories = Category::all(['id', 'name']);
+
+        return Inertia::render('Instructor/Courses/Create', [
+            'categories' => $categories,
+            'course' => $course,
+            'isEdit' => $isEdit,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Course $course)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'short_description' => 'nullable|string',
+        'description' => 'nullable|string',
+        'category_id' => 'nullable|exists:categories,id',
+        'level' => 'nullable|in:beginner,intermediate,advanced',
+        'price' => 'nullable|numeric|min:0',
+        'duration_minutes' => 'nullable|integer|min:1',
+        'is_published' => 'nullable|boolean',
+        'published_at' => 'nullable|date',
+    ]);
+
+    // Si el título cambió, se genera nuevo slug único
+    if ($validated['title'] !== $course->title) {
+        $slug = Str::slug($validated['title']);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (Course::where('slug', $slug)->where('id', '!=', $course->id)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        $validated['slug'] = $slug;
+    }
+
+    // Publicación: si no viene desde el form, mantener la actual
+    if (!array_key_exists('is_published', $validated)) {
+        $validated['is_published'] = $course->is_published;
+    }
+
+    // Si viene published_at desde el form (modo edición), úsalo
+    // Si no viene, mantener el que ya tiene
+    if (!array_key_exists('published_at', $validated)) {
+        $validated['published_at'] = $course->published_at;
+    }
+
+    $course->update($validated);
+
+    return redirect()
+        ->route('instructor.courses.index')
+        ->with('success', 'Curso actualizado correctamente.');
+}
+
+
+    public function builder(Course $course)
     {
-        //
+        return Inertia::render('Courses/Builder', [
+            'course' => $course->load('modules.lessons', 'category')
+        ]);
     }
 
     public function destroy(Course $course)

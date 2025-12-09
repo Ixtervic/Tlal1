@@ -23,6 +23,11 @@ const mainNavItems: NavItem[] = [
         href: '/instructor/courses',
         icon: Book,
     },
+    {
+        title: 'Mis inscripciones',
+        href: '/student/enrollments',
+        icon: Book,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

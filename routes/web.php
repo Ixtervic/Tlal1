@@ -7,24 +7,65 @@ use Inertia\Inertia;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\InstructorCourseController;
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\LessonController;
+use App\Http\Controllers\EnrollmentController;
+
 
 Route::post('/auth/google', [GoogleAuthController::class, 'store'])->name('auth.google');
 
 
 // 🔓 Público: cualquiera puede ver los cursos y buscar
 Route::get('/', [CourseController::class, 'index'])->name('home');
-Route::get('/cursos', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/buscar/{searched?}', [SearchController::class, 'search'])->name('search.results');
+Route::get('/cursos', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+
+
+
+Route::middleware(['auth'])->group(function () {
+
+    // Inscribirse a un curso
+    Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'store'])
+        ->name('courses.enroll');
+
+    // Dashboard de inscripciones del estudiante
+    Route::get('/student/enrollments', [EnrollmentController::class, 'index'])
+        ->name('student.enrollments');
+});
+
+
+Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->group(function () {
+
+    // Courses
+    Route::get('courses/{course}/builder', [InstructorCourseController::class, 'builder'])->name('courses.builder');
+
+    // Modules
+    Route::post('courses/{course}/modules', [ModuleController::class, 'store'])->name('modules.store');
+    Route::put('modules/{module}', [ModuleController::class, 'update'])->name('modules.update');
+    Route::delete('modules/{module}', [ModuleController::class, 'destroy'])->name('modules.destroy');
+
+    // Lessons
+    Route::post('modules/{module}/lessons', [LessonController::class, 'store'])->name('lessons.store');
+    Route::put('lessons/{lesson}', [LessonController::class, 'update'])->name('lessons.update');
+    Route::delete('lessons/{lesson}', [LessonController::class, 'destroy'])->name('lessons.destroy');
+});
+
 
 
 // 🔒 Protegidas (para instructores)
 Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->group(function () {
     Route::get('/courses', [InstructorCourseController::class, 'index'])->name('instructor.courses.index');
+    
     Route::get('/courses/create', [InstructorCourseController::class, 'create'])->name('instructor.courses.create');
     Route::post('/courses', [InstructorCourseController::class, 'store'])->name('instructor.courses.store');
-    Route::delete('/courses/{course}', [InstructorCourseController::class, 'edit'])->name('instructor.courses.edit');
+
+    Route::get('/courses/{course}/edit', [InstructorCourseController::class, 'edit'])->name('instructor.courses.edit');
+    Route::put('/courses/{course}', [InstructorCourseController::class, 'update'])->name('instructor.courses.update');
+
     Route::delete('/courses/{course}', [InstructorCourseController::class, 'destroy'])->name('instructor.courses.destroy');
 });
+
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Admin/Dashboard'))->name('admin.dashboard');
@@ -84,9 +125,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Cursos
-Route::get('cursos/{id}', [CourseController::class, 'show'])
-    ->name('courses.show')
-    ->middleware('permission:courses.show');
+
 
 /*
 Route::get('cursos', [CourseController::class, 'index'])

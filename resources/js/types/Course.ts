@@ -15,6 +15,7 @@ export interface Course {
     title: string;
     slug: string;
     short_description: string | null;
+    description: string | null;
     level: 'beginner' | 'intermediate' | 'advanced';
     price: number;
     duration_minutes: number | null;

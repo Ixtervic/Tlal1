@@ -22,7 +22,6 @@ interface CreateProps {
 }
 
 export default function Create({ categories, course, isView, isEdit }: CreateProps) {
-
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: `${isEdit ? 'Editar' : isView ? 'Ver' : 'Crear'} Curso`,
@@ -31,17 +30,16 @@ export default function Create({ categories, course, isView, isEdit }: CreatePro
     ];
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
-        title: course?.title || "",
-        short_description: course?.short_description || "",
-        description: course?.description || "",
-        category_id: course?.category_id || "",
-        level: course?.level || "beginner",
+        title: course?.title || '',
+        short_description: course?.short_description || '',
+        description: course?.description || '',
+        category_id: course?.category_id || '',
+        level: course?.level || 'beginner',
         price: course?.price || 0,
-        duration_minutes: course?.duration_minutes || "",
-        is_published: course?.is_published ?? true,
-        published_at: course?.published_at || "",
+        duration_minutes: course?.duration_minutes || '',
+        is_published: course ? course.is_published : true,
+        published_at: course?.published_at || new Date().toISOString().slice(0, 16),
     });
-
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -79,7 +77,6 @@ export default function Create({ categories, course, isView, isEdit }: CreatePro
                 <CardContent>
                     <form className="flex flex-col gap-6" onSubmit={submit} autoComplete="off">
                         <div className="grid gap-6">
-
                             {/* Título */}
                             <div className="grid gap-2">
                                 <Label htmlFor="title">Título del curso</Label>
@@ -189,33 +186,30 @@ export default function Create({ categories, course, isView, isEdit }: CreatePro
                                 <InputError message={errors.duration_minutes} />
                             </div>
 
-                            {/* Fecha de publicación */}
-                            <div className="grid gap-2">
-                                <Label htmlFor="published_at">Fecha de publicación</Label>
-                                <Input
-                                    id="published_at"
-                                    type="datetime-local"
-                                    value={data.published_at}
-                                    onChange={(e) => setData('published_at', e.target.value)}
-                                    disabled={processing || isView}
-                                />
-                                <InputError message={errors.published_at} />
-                            </div>
+                            {/* Fecha de publicación solo en modo edición */}
+                            {isEdit && (
+                                <div className="grid gap-2">
+                                    <Label htmlFor="published_at">Fecha de publicación</Label>
+                                    <Input
+                                        id="published_at"
+                                        type="datetime-local"
+                                        value={data.published_at}
+                                        onChange={(e) => setData('published_at', e.target.value)}
+                                        disabled={processing}
+                                    />
+                                    <InputError message={errors.published_at} />
+                                </div>
+                            )}
 
                             {/* Botón Guardar */}
                             {!isView && (
-                                <Button
-                                    type="submit"
-                                    disabled={processing}
-                                    className="mt-2 w-fit bg-green-700 text-white hover:bg-green-800"
-                                >
+                                <Button type="submit" disabled={processing} className="mt-2 w-fit bg-green-700 text-white hover:bg-green-800">
                                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                                     {processing ? (isEdit ? 'Actualizando...' : 'Guardando...') : isEdit ? 'Actualizar' : 'Guardar'}
                                 </Button>
                             )}
                         </div>
                     </form>
-
                 </CardContent>
             </Card>
         </AppLayout>

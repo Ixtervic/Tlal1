@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Enrollment;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
@@ -46,8 +47,20 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        //
+        // Cargar relaciones necesarias
+        $course->load(['user', 'category']);
+
+        $is_enrolled = auth()->check() ? auth()->user()
+            ->enrollments()
+            ->where('course_id', $course->id)
+            ->exists() : false;
+
+        return inertia('Student/Courses/Show', [
+            'course' => $course,
+            'is_enrolled' => $is_enrolled,
+        ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.

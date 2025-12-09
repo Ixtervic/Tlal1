@@ -28,7 +28,7 @@ export default function CourseCard({ course, canEdit, canDelete }: Props) {
                     </Link>
                     {canEdit && (
                         <Link
-                            href={route('courses.edit', course.id)}
+                            href={route('instructor.courses.edit', course.id)}
                             className="rounded-lg bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
                         >
                             Editar
@@ -36,7 +36,7 @@ export default function CourseCard({ course, canEdit, canDelete }: Props) {
                     )}
                     {canDelete && (
                         <Link
-                            href={route('courses.destroy', course.id)}
+                            href={route('instructor.courses.destroy', course.id)}
                             method="delete"
                             as="button"
                             className="rounded-lg bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
