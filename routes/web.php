@@ -7,9 +7,13 @@ use Inertia\Inertia;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\InstructorCourseController;
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\ChatbotController;
 
 Route::post('/auth/google', [GoogleAuthController::class, 'store'])->name('auth.google');
 
+//Chatbot route
+Route::post('/chatbot/message', [ChatbotController::class, 'send'])
+    ->name('chatbot.message');
 
 // 🔓 Público: cualquiera puede ver los cursos y buscar
 Route::get('/', [CourseController::class, 'index'])->name('home');
